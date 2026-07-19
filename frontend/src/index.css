@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bgApp text-primary;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Custom styles for tables, inputs, buttons, skeletons */
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-slate-800 text-white font-medium px-4 py-2 rounded-custom transition-all duration-200 shadow-sm flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-white hover:bg-slate-50 text-slate-700 border border-borderLight font-medium px-4 py-2 rounded-custom transition-all duration-200 shadow-sm flex items-center justify-center gap-2 text-sm disabled:opacity-50;
+  }
+  
+  .btn-accent {
+    @apply bg-accent hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-custom transition-all duration-200 shadow-sm flex items-center justify-center gap-2 text-sm disabled:opacity-50;
+  }
+  
+  .input-field {
+    @apply w-full bg-white border border-borderLight rounded-custom px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-all placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-500;
+  }
+  
+  .card-base {
+    @apply bg-white border border-borderLight rounded-custom shadow-soft p-6;
+  }
+  
+  .table-th {
+    @apply text-left px-4 py-3 bg-slate-50 text-slate-500 font-semibold text-xs uppercase tracking-wider border-b border-borderLight;
+  }
+  
+  .table-td {
+    @apply px-4 py-3 border-b border-borderLight text-sm text-slate-700 whitespace-nowrap;
+  }
+}
