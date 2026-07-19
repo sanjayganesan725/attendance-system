@@ -1,230 +1,280 @@
-# Attendance Management System
+# 📋 Attendance Management System
 
-A COMPLETE, production-ready, full-stack Attendance Management System suitable for colleges, schools, companies, and training institutes. Designed with a clean, minimal monochrome aesthetic inspired by Notion, Linear, and GitHub.
+A full-stack web application for managing student attendance, built for the **Department of Civil Engineering** at a university. Admins, faculty, and students each have their own dashboards with role-specific features.
 
----
-
-## Technical Stack
-
-- **Frontend**: React 18, TypeScript, Vite, TailwindCSS, React Router v6, React Hook Form, Zod, TanStack Query, Axios, Lucide Icons, Recharts (for dashboards).
-- **Backend**: FastAPI (Python 3.10+), SQLAlchemy (ORM), Pydantic v2 (Validation), Python-jose (JWT), Passlib + bcrypt (Password hashing), Pandas/Openpyxl (Report compilation).
-- **Database**: PostgreSQL (with automatic SQLite fallback for ease of local evaluation).
-- **File Upload**: Local server storage (`/backend/app/uploads`).
+> **Live Demo**: Coming soon (deploying to Render + Vercel)
 
 ---
 
-## Folder Structure
+## ✨ What This App Does
 
-```text
-/attendance-system
-├── /backend
-│   ├── /app
-│   │   ├── /auth          # Authentication dependencies & role protection
-│   │   ├── /core          # Security settings, hashing & JWT policies
-│   │   ├── /database      # DB session, connection pooling setup
-│   │   ├── /models        # SQLAlchemy schema declarations
-│   │   ├── /routes        # Individual API routing handlers
-│   │   ├── /schemas       # Pydantic validation schemas
-│   │   ├── /utils         # Generic helper methods (audit logging)
-│   │   └── main.py        # Entrypoint starting FastAPI, mounting static files
-│   ├── requirements.txt   # Backend python dependencies list
-│   └── seed.py            # Pre-populates DB accounts and history stats
-└── /frontend
-    ├── /src
-    │   ├── /components    # Custom modal overlays, toasts & skeletons
-    │   ├── /context       # JWT session storage Context
-    │   ├── /layouts       # Auth layouts & Collapsible sidebar navigation Layouts
-    │   ├── /pages         # Admin/Faculty/Student dashboards and subviews
-    │   ├── /services      # Axios configs and JWT request interceptors
-    │   ├── App.tsx        # Router setup and providers wrapper
-    │   ├── index.css      # Custom scrollbars, buttons, shadows
-    │   └── main.tsx       # Mounts React DOM
-    ├── index.html         # HTML wrapper importing Inter font
-    ├── package.json       # Node package manager declarations
-    ├── tailwind.config.js # Color variables and design system tokens
-    ├── tsconfig.json      # TypeScript compiler settings
-    └── vite.config.ts     # Proxy routes to backend
+### For Admins
+- View department-wide statistics (total students, faculty, attendance rates)
+- Manage faculty members, students, classes, subjects, and academic years
+- Assign faculty to subjects and classes
+- Manage holidays and post daily updates/announcements
+- Export attendance reports as PDF, Excel, or CSV
+
+### For Faculty
+- Take attendance for assigned classes and subjects
+- View and edit past attendance records (with audit trail)
+- See attendance statistics for their classes
+- Post daily updates visible to all department members
+
+### For Students
+- View personal attendance percentage (overall and subject-wise)
+- See today's attendance status
+- View attendance history with filters
+- Access staff directory with faculty details
+- Read daily department updates
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18, TypeScript, Vite, TailwindCSS, React Router v6 |
+| **State Management** | TanStack Query (React Query), React Hook Form + Zod |
+| **UI** | Lucide Icons, Recharts (charts), Custom Modal/Toast components |
+| **Backend** | FastAPI (Python), SQLAlchemy ORM, Pydantic v2 |
+| **Auth** | JWT tokens (python-jose), bcrypt password hashing |
+| **Database** | PostgreSQL (production) / SQLite (local development) |
+| **Reports** | Pandas, Openpyxl (Excel), ReportLab (PDF) |
+
+---
+
+## 📁 Project Structure
+
+```
+attendance-system/
+├── backend/
+│   ├── app/
+│   │   ├── auth/           # JWT authentication & role-based access control
+│   │   ├── core/           # Config settings, password hashing, JWT helpers
+│   │   ├── database/       # SQLAlchemy engine & session setup
+│   │   ├── models/         # Database table definitions (SQLAlchemy models)
+│   │   ├── routes/         # API endpoints (auth, admin, faculty, student, reports)
+│   │   ├── schemas/        # Request/response validation (Pydantic schemas)
+│   │   ├── uploads/        # Profile pictures storage
+│   │   ├── utils/          # Helper functions
+│   │   └── main.py         # FastAPI app entry point
+│   ├── Dockerfile          # Docker config for Render deployment
+│   ├── requirements.txt    # Python dependencies
+│   └── seed.py             # Database seeder with sample data
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Reusable UI (Modal, Toast, Skeleton loader)
+│   │   ├── context/        # Auth context (login state management)
+│   │   ├── layouts/        # Page layouts (sidebar navigation, auth pages)
+│   │   ├── pages/          # All page components organized by role
+│   │   │   ├── admin/      # Dashboard, Faculty, Students, Academic, Holidays
+│   │   │   ├── auth/       # Login, Forgot Password, Reset Password
+│   │   │   ├── faculty/    # Dashboard, Take Attendance, History, Manage Marks
+│   │   │   ├── shared/     # Daily Updates, Profile, Reports
+│   │   │   └── student/    # Dashboard, History, Marks, Staff Directory
+│   │   ├── services/       # Axios API client with JWT interceptors
+│   │   └── App.tsx         # Router setup
+│   ├── vercel.json         # Vercel SPA routing config
+│   ├── vite.config.ts      # Vite dev server + API proxy
+│   └── package.json        # Node.js dependencies
+├── render.yaml             # Render deployment blueprint
+└── .gitignore
 ```
 
 ---
 
-## Installation & Launch Guide
+## 🚀 Getting Started (Local Development)
 
-### 1. Backend Setup
-Navigate to the `backend` folder:
+### Prerequisites
+- **Python 3.10+** — [Download](https://www.python.org/downloads/)
+- **Node.js 18+** — [Download](https://nodejs.org/)
+
+### Step 1: Start the Backend
+
 ```bash
 cd backend
-```
 
-Create a python virtual environment:
-```bash
+# Create and activate virtual environment
 python -m venv venv
-venv\Scripts\activate   # On Windows
-source venv/bin/activate # On Unix/macOS
-```
+venv\Scripts\activate       # Windows
+# source venv/bin/activate  # macOS/Linux
 
-Install requirements:
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-*(Optional)* Run the database seeder to initialize the database with mock accounts and 30 days of historical attendance:
-```bash
+# Seed the database with sample data
 python seed.py
-```
 
-Launch the FastAPI application server:
-```bash
+# Start the API server
 uvicorn app.main:app --reload --port 8000
 ```
-API Documentation is served at: `http://localhost:8000/docs`.
 
----
+The API will be running at `http://localhost:8000`  
+Swagger docs available at `http://localhost:8000/docs`
 
-### 2. Frontend Setup
-Navigate to the `frontend` folder:
+### Step 2: Start the Frontend
+
 ```bash
-cd ../frontend
-```
+cd frontend
 
-Install NPM packages:
-```bash
+# Install dependencies
 npm install
-```
 
-Launch the Vite hot-reloading development server:
-```bash
+# Start the development server
 npm run dev
 ```
-Open `http://localhost:5173` in your web browser.
+
+Open `http://localhost:5173` in your browser.
+
+> **Note**: The Vite dev server automatically proxies `/api/v1` requests to `http://localhost:8000`, so both servers need to be running.
 
 ---
 
-## Environment Variables
+## 🔐 Login Credentials
 
-### Backend (`/backend/.env`)
-Create a `.env` file in the `/backend` folder to configure database and security credentials:
+After running `python seed.py`, you can log in with these accounts:
+
+### Admin
+| Email | Password |
+|-------|----------|
+| admin@attendance.com | admin123 |
+
+### Students (Sample)
+| Email | Password | Name | Year |
+|-------|----------|------|------|
+| student@attendance.com | student123 | Sumesh Srinivas N | 2nd Year |
+| s24209001@attendance.com | 24209001 | Sanjay G S | 3rd Year |
+
+> **All other students** use their roll number as both the email prefix (`s{roll_no}@attendance.com`) and password.
+
+### Faculty
+| Email | Password | Name |
+|-------|----------|------|
+| b.sangeethavani@ruraluniv.ac.in | sangeetha123 | Dr. B. Sangeethavani (HOD) |
+| r.t.balamurali@ruraluniv.ac.in | balamurali123 | Dr. R. T. Balamurali |
+| sakthi85.env@gmail.com | uma123 | Dr. S. Uma |
+| jeseema.nisrin@gmail.com | jeseema123 | Dr. J. Jeseema Nisrin |
+| infant015@gmail.com | infant123 | Er. K. Infant Xavier |
+| g.jegadhesh@ruraluniv.ac.in | jegadhesh123 | Mr. G. Jegadhesh |
+| vinoth@ruraluniv.ac.in | vinoth123 | Dr. Vinoth |
+| rajarajan@ruraluniv.ac.in | rajarajan123 | Dr. Rajarajan |
+| lakshmi@ruraluniv.ac.in | lakshmi123 | Dr. Lakshmi |
+| s.abinaya@ruraluniv.ac.in | abinaya123 | Mrs. S. Abinaya |
+| p.marimuthu@ruraluniv.ac.in | marimuthu123 | Er. P. Marimuthu |
+
+---
+
+## ⚙️ Environment Variables
+
+### Backend (`backend/.env`)
 
 ```ini
-# Project Information
-PROJECT_NAME="Attendance Management System"
+# Database (defaults to SQLite if not set)
+DATABASE_URL=postgresql://user:password@localhost:5432/attendance_db
 
-# Security (Change in production!)
-SECRET_KEY="supersecretkeychangeinproduction1234567890"
+# JWT Secret Key (change in production!)
+SECRET_KEY=your-secret-key-here
 
-# Access token expiry (e.g. 7 days)
-ACCESS_TOKEN_EXPIRE_MINUTES=10080
+# Allowed frontend origins (comma-separated)
+BACKEND_CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+```
 
-# Database Configuration (Auto-falls back to SQLite 'attendance.db' if empty)
-DATABASE_URL="postgresql://user:password@localhost:5432/attendance_db"
+### Frontend (`frontend/.env.production`)
 
-# Allowed CORS origins
-BACKEND_CORS_ORIGINS="http://localhost:5173,http://127.0.0.1:5173"
+```ini
+# Backend API URL (set to your deployed backend URL)
+VITE_API_URL=https://your-backend.onrender.com/api/v1
 ```
 
 ---
 
-## Database Schema
+## 🌐 Deployment
 
-```mermaid
-erDiagram
-    users ||--|| students : "student profile (1-1)"
-    users ||--|| faculty : "faculty profile (1-1)"
-    users ||--o{ attendance : "marks"
-    users ||--o{ announcements : "creates"
-    users ||--o{ audit_logs : "triggers"
-    departments ||--o{ classes : "has"
-    departments ||--o{ subjects : "has"
-    departments ||--o{ students : "enrolled"
-    departments ||--o{ faculty : "employs"
-    academic_years ||--o{ classes : "has"
-    academic_years ||--o{ semesters : "has"
-    classes ||--o{ students : "contains"
-    classes ||--o{ subject_faculty_assignments : "has workloads"
-    classes ||--o{ attendance : "conducted in"
-    subjects ||--o{ subject_faculty_assignments : "included in"
-    subjects ||--o{ attendance : "conducted for"
-    faculty ||--o{ subject_faculty_assignments : "teaches"
-    attendance ||--o{ attendance_audit_logs : "tracks changes"
-```
+### Backend → Render
 
-### Table Definitions
-1. **users**: ID (UUID), Email, Hashed Password, Role (`admin`/`faculty`/`student`), Full Name, Phone, Profile Picture URL, Active Status, Timestamps.
-2. **departments**: ID (UUID), Name, Department Code (e.g., CSE), Description.
-3. **academic_years**: ID (UUID), Name (e.g., 2025-2026), Start/End Dates, Active state.
-4. **semesters**: ID (UUID), Name (e.g., Semester 1), Code, Academic Year ID (FK).
-5. **classes**: ID (UUID), Name (e.g., CSE Section A), Department (FK), Semester (FK), Academic Year (FK).
-6. **subjects**: ID (UUID), Name, Subject Code (e.g., CS101), Department (FK).
-7. **students**: ID (UUID, FK to User), Roll Number, Registration Number, Class (FK), Department (FK), Semester (FK), Academic Year (FK).
-8. **faculty**: ID (UUID, FK to User), Employee ID, Designation, Department (FK).
-9. **subject_faculty_assignments**: ID (UUID), Faculty (FK), Subject (FK), Class (FK).
-10. **attendance**: ID (UUID), Student (FK), Class (FK), Subject (FK), Date, Status (`Present`, `Absent`, `Late`, `Half Day`, `Leave`), Remarks, Marked By (FK).
-11. **attendance_audit_logs**: ID (UUID), Attendance ID (FK), Old Status, New Status, Changed By User (FK), Reason.
-12. **announcements**: ID (UUID), Title, Content, Target Role, Created By User (FK).
-13. **holidays**: ID (UUID), Name, Date, Description.
-14. **audit_logs**: ID (UUID), User ID (FK), Action Name, Details text, IP Address.
+1. Push this repo to GitHub
+2. Go to [Render Dashboard](https://dashboard.render.com) → New → Blueprint
+3. Connect your GitHub repo — Render auto-detects `render.yaml`
+4. It creates a **Web Service** (Docker) + **PostgreSQL database** automatically
+5. Set `BACKEND_CORS_ORIGINS` to your Vercel frontend URL
+6. After deploy, open the Render Shell and run `python seed.py` to populate data
+
+### Frontend → Vercel
+
+1. Go to [Vercel](https://vercel.com) → Import Project → Select repo
+2. Set **Root Directory** to `frontend`
+3. Set **Framework Preset** to `Vite`
+4. Add environment variable: `VITE_API_URL` = `https://your-backend.onrender.com/api/v1`
+5. Deploy
 
 ---
 
-## API Documentation Summary
+## 📊 API Endpoints
 
-### 1. Authentication (`/api/v1/auth`)
-- `POST /login`: Receives `username` and `password` (urlencoded), returns JWT accessToken, user details, and active role.
-- `GET /me`: Returns detailed record of current authenticated user session.
-- `POST /change-password`: Modifies current password credentials.
-- `POST /forgot-password`: Generates secure token; logs recovery link in backend terminal console.
-- `POST /reset-password`: Resets user credentials using active JWT token.
-- `POST /profile/picture`: Handles avatar image upload; saves file inside local directory `/backend/app/uploads/`.
-- `PUT /profile`: Modifies full name, phone number, and email.
+All API endpoints are prefixed with `/api/v1`.
 
-### 2. Administrator Operations (`/api/v1/admin`)
-- `GET /dashboard/stats`: Returns analytics counters, historical monthly charts data, and system logs.
-- `GET/POST/PUT/DELETE /departments`: Department management endpoints.
-- `GET/POST/PUT/DELETE /classes`: Class configurations.
-- `GET/POST/PUT/DELETE /subjects`: Course catalog setup.
-- `GET/POST/PUT/DELETE /students`: Manage enrolled student files.
-- `GET/POST/PUT/DELETE /faculty`: Manage instructor details.
-- `GET/POST/DELETE /assignments`: Teach workload mapping.
-- `GET/POST/DELETE /holidays`: Exempt attendance requirements on calendar dates.
-- `GET/POST/DELETE /announcements`: Post notifications to dashboards.
-- `GET /audit-logs`: Review system activity records.
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/login` | Login with email & password, returns JWT |
+| GET | `/auth/me` | Get current user details |
+| POST | `/auth/change-password` | Change password |
+| POST | `/auth/forgot-password` | Request password reset |
+| POST | `/auth/reset-password` | Reset password with token |
+| POST | `/auth/profile/picture` | Upload profile picture |
+| PUT | `/auth/profile` | Update profile info |
 
-### 3. Faculty Operations (`/api/v1/faculty`)
-- `GET /dashboard/stats`: View teaching assignments and active statistics.
-- `GET /classes/{class_id}/students`: Lists students in class for marking rolls.
-- `POST /attendance/submit`: Submit bulk roll registers. Triggers duplicate constraints checks.
-- `GET /attendance/history`: List previous logs.
-- `PUT /attendance/{attendance_id}`: Edit individual rolls. Populates audit trail histories.
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/dashboard/stats` | Dashboard analytics & charts |
+| CRUD | `/admin/departments` | Manage departments |
+| CRUD | `/admin/classes` | Manage classes |
+| CRUD | `/admin/subjects` | Manage subjects |
+| CRUD | `/admin/students` | Manage students |
+| CRUD | `/admin/faculty` | Manage faculty |
+| CRUD | `/admin/assignments` | Faculty-subject-class mapping |
+| CRUD | `/admin/holidays` | Manage holidays |
+| CRUD | `/admin/announcements` | Post announcements |
+| GET | `/admin/audit-logs` | View system activity logs |
 
-### 4. Student Operations (`/api/v1/student`)
-- `GET /profile`: Personal academic enrollment records.
-- `GET /today-attendance`: Roll checklists for today's courses.
-- `GET /subject-wise-percentage`: Calculates attended lectures vs conducted weights per course.
-- `GET /attendance/history`: Historical lists of all marked entries.
+### Faculty
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/faculty/dashboard/stats` | Teaching load & statistics |
+| GET | `/faculty/classes/{id}/students` | Student list for attendance |
+| POST | `/faculty/attendance/submit` | Submit attendance for a class |
+| GET | `/faculty/attendance/history` | View past attendance records |
+| PUT | `/faculty/attendance/{id}` | Edit attendance (creates audit trail) |
 
-### 5. Reporting Services (`/api/v1/reports`)
-- `GET /export`: Download spreadsheets or documents filtered by dates, student, class, and subjects.
-  - Parameters: `format` (`pdf`|`excel`|`csv`), `class_id`, `subject_id`, `student_id`, `start_date`, `end_date`.
+### Student
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/student/profile` | Personal academic details |
+| GET | `/student/today-attendance` | Today's attendance status |
+| GET | `/student/subject-wise-percentage` | Attendance % per subject |
+| GET | `/student/attendance/history` | Full attendance history |
+
+### Reports
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/reports/export` | Export as PDF, Excel, or CSV |
+
+Full interactive API docs: `http://localhost:8000/docs`
 
 ---
 
-## Seed Accounts (For Local Evaluation)
+## 📱 Mobile Support
 
-Run `python seed.py` to pre-seed these credentials:
+The application is fully responsive and optimized for phone screens, including:
+- Collapsible sidebar navigation
+- Touch-friendly form inputs and buttons
+- Responsive data tables and cards
+- Mobile-optimized attendance marking interface
 
-| Email | Password | Role | Description |
-| :--- | :--- | :--- | :--- |
-| **admin@attendance.com** | `admin123` | **Admin** | System manager access |
-| **student@attendance.com** | `student123` | **Student** | Sumesh Srinivas N (CE Student) |
-| **b.sangeethavani@ruraluniv.ac.in** | `sangeetha123` | **Faculty** | Dr. B. Sangeethavani (CE Dept Head) |
-| **r.t.balamurali@ruraluniv.ac.in** | `balamurali123` | **Faculty** | Dr. R. T. Balamurali |
-| **sakthi85.env@gmail.com** | `uma123` | **Faculty** | Dr. S. Uma |
-| **jeseema.nisrin@gmail.com** | `jeseema123` | **Faculty** | Dr. J. Jeseema Nisrin |
-| **infant015@gmail.com** | `infant123` | **Faculty** | Er. K. Infant Xavier |
-| **g.jegadhesh@ruraluniv.ac.in** | `jegadhesh123` | **Faculty** | Mr. G. Jegadhesh |
-| **vinoth@ruraluniv.ac.in** | `vinoth123` | **Faculty** | Dr. Vinoth |
-| **rajarajan@ruraluniv.ac.in** | `rajarajan123` | **Faculty** | Dr. Rajarajan |
-| **lakshmi@ruraluniv.ac.in** | `lakshmi123` | **Faculty** | Dr. Lakshmi |
-| **s.abinaya@ruraluniv.ac.in** | `abinaya123` | **Faculty** | Mrs. S. Abinaya |
-| **p.marimuthu@ruraluniv.ac.in** | `marimuthu123` | **Faculty** | Er. P. Marimuthu |
-| **chemistry@ruraluniv.ac.in** | `chemistry123` | **Faculty** | Chemistry Dept |
+---
+
+## 📄 License
+
+This project is for educational purposes. Built for the Department of Civil Engineering.
