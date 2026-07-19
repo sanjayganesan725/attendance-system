@@ -1,6 +1,3 @@
-# Portable Git (local only)
-PortableGit/
-git-portable.exe
 
 # Backend
 backend/venv/
