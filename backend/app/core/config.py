@@ -28,7 +28,8 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
     
-    # Upload directory — defaults to local ./uploads, can be overridden via env
+    # Upload directory — defaults to local ./uploads.
+    # On Vercel serverless, falls back to /tmp/uploads (writable temp dir).
     UPLOAD_DIR: str = os.environ.get(
         "UPLOAD_DIR",
         os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads")
@@ -40,6 +41,9 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-# Ensure uploads directory exists
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+# Ensure uploads directory exists — skipped silently on read-only filesystems
+try:
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+except OSError:
+    pass
 

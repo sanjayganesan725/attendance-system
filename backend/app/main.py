@@ -24,9 +24,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Ensure uploads directory is mounted to serve profile pictures
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+# Mount uploads directory to serve profile pictures.
+# Wrapped in try/except: Vercel's serverless filesystem is read-only,
+# so this is skipped gracefully when running as a serverless function.
+try:
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+except Exception:
+    pass  # Uploads not available in serverless environment
 
 # Include router paths
 app.include_router(auth.router, prefix=settings.API_V1_STR)
