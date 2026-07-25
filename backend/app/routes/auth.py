@@ -27,9 +27,15 @@ def seed_database_endpoint():
 def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     from sqlalchemy import func
     username_val = form_data.username.strip()
-    user = db.query(models.User).filter(
-        (func.lower(models.User.email) == func.lower(username_val)) |
-        (func.lower(models.User.full_name) == func.lower(username_val))
+    clean_username = username_val.lower()
+    clean_nospace = username_val.lower().replace(" ", "")
+
+    user = db.query(models.User).outerjoin(models.Student, models.User.id == models.Student.id).filter(
+        (func.lower(models.User.email) == clean_username) |
+        (func.lower(models.User.email) == f"s{clean_username}@attendance.com") |
+        (func.lower(models.User.full_name) == clean_username) |
+        (func.lower(func.replace(models.User.full_name, " ", "")) == clean_nospace) |
+        (func.lower(models.Student.roll_number) == clean_username)
     ).first()
     if not user or not security.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
