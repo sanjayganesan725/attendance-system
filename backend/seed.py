@@ -401,7 +401,7 @@ def seed_db(drop_first=False):
                 
             user = models.User(
                 email=email,
-                hashed_password=security.get_password_hash(roll_no),
+                hashed_password=security.get_password_hash("123456"),
                 role="student",
                 full_name=name,
                 phone=f"555{2000000 + idx}",
