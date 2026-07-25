@@ -21,7 +21,7 @@ def seed_db(drop_first=False):
         # 1. Admin User
         admin = models.User(
             email="admin@attendance.com",
-            hashed_password=security.get_password_hash("admin123"),
+            hashed_password=security.get_password_hash("123456"),
             role="admin",
             full_name="System Administrator",
             phone="1234567890",
@@ -276,7 +276,7 @@ def seed_db(drop_first=False):
         for idx, staff in enumerate(staff_data):
             user = models.User(
                 email=staff["email"],
-                hashed_password=security.get_password_hash(staff["password"]),
+                hashed_password=security.get_password_hash("123456"),
                 role="faculty",
                 full_name=staff["name"],
                 phone=f"98765432{idx+2}",
@@ -458,10 +458,9 @@ def seed_db(drop_first=False):
         for idx, (roll_no, name) in enumerate(ce_students_2nd_data, start=1):
             if roll_no == "25209002":
                 email = "student@attendance.com"
-                password_hash = security.get_password_hash("student123")
             else:
                 email = f"s{roll_no}@attendance.com"
-                password_hash = security.get_password_hash(roll_no)
+            password_hash = security.get_password_hash("123456")
                 
             user = models.User(
                 email=email,
