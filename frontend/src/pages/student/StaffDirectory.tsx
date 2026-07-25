@@ -3,6 +3,7 @@ import { Mail, Phone, Search, Users, GraduationCap, Award, BookOpen, Calendar, E
 import api from '../../services/api';
 import { useToast } from '../../components/Toast';
 import { Modal } from '../../components/Modal';
+import { useAuth } from '../../context/AuthContext';
 
 interface StaffUser {
   id: string;
@@ -61,6 +62,7 @@ interface FacultyProfileDetail {
 
 export const StudentStaffDirectory: React.FC = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [staffList, setStaffList] = useState<StaffData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -73,7 +75,8 @@ export const StudentStaffDirectory: React.FC = () => {
   const fetchStaff = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get('/student/staff-directory');
+      const role = user?.role || 'student';
+      const response = await api.get(`/${role}/staff-directory`);
       setStaffList(response.data);
     } catch (err) {
       toast("Error fetching staff directory details", "error");
@@ -85,7 +88,8 @@ export const StudentStaffDirectory: React.FC = () => {
   const fetchStaffDetails = async (id: string) => {
     setIsDetailsLoading(true);
     try {
-      const response = await api.get(`/student/staff-directory/${id}`);
+      const role = user?.role || 'student';
+      const response = await api.get(`/${role}/staff-directory/${id}`);
       setDetailedStaff(response.data);
     } catch (err) {
       toast("Error fetching detailed staff profile", "error");

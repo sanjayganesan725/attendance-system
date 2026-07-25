@@ -264,12 +264,13 @@ export const FacultyTakeAttendance: React.FC = () => {
             <select 
               value={selectedPeriod} 
               onChange={(e) => setSelectedPeriod(Number(e.target.value))} 
-              className="input-field"
+              className="input-field font-medium text-slate-800"
               required
             >
               {[1, 2, 3, 4, 5, 6].map(p => (
                 <option key={p} value={p}>Period {p}</option>
               ))}
+              <option value={7}>Extra Class</option>
             </select>
           </div>
         </div>

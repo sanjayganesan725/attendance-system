@@ -343,3 +343,26 @@ def get_faculty_announcements(db: Session = Depends(get_db)):
     return db.query(models.Announcement).filter(
         or_(models.Announcement.target_role == "all", models.Announcement.target_role == "faculty")
     ).order_by(models.Announcement.created_at.desc()).all()
+
+# ----------------- STAFF DIRECTORY -----------------
+@router.get("/staff-directory", response_model=List[schemas.FacultyDetailOut])
+def get_faculty_staff_directory(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    faculty_profile = db.query(models.Faculty).filter(models.Faculty.id == current_user.id).first()
+    if faculty_profile and faculty_profile.department_id:
+        return db.query(models.Faculty).filter(models.Faculty.department_id == faculty_profile.department_id).all()
+    return db.query(models.Faculty).all()
+
+@router.get("/staff-directory/{faculty_id}", response_model=schemas.FacultyProfileOut)
+def get_faculty_staff_member_profile(
+    faculty_id: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    faculty_member = db.query(models.Faculty).filter(models.Faculty.id == faculty_id).first()
+    if not faculty_member:
+        raise HTTPException(status_code=404, detail="Faculty member not found")
+    return faculty_member
+

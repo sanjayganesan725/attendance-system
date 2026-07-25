@@ -293,7 +293,7 @@ class AttendanceBulkCreate(BaseModel):
     class_id: str
     subject_id: str
     date: date
-    period: int = Field(..., ge=1, le=6)
+    period: int = Field(..., ge=1, le=12)
     records: List[AttendanceCreate]
 
 class AttendanceUpdate(BaseModel):

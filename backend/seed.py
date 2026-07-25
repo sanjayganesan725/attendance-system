@@ -120,14 +120,13 @@ def seed_db():
         sub_pe3 = models.Subject(name="Professional Elective - III", code="24CEUC41E3", department_id=ce.id, credits=3.0)
         sub_pe4 = models.Subject(name="Professional Elective - IV", code="24CEUC41E4", department_id=ce.id, credits=3.0)
         sub_ppl = models.Subject(name="Professional Practice Law and Ethics", code="24CEUV4105", department_id=ce.id, credits=2.0)
-        sub_ied = models.Subject(name="Irrigation and Environmental Engineering Drawing", code="24CEUC4137", department_id=ce.id, credits=1.5)
         sub_dp = models.Subject(name="Design Project", code="24CEUC4138", department_id=ce.id, credits=1.5)
         
         db.add_all([
             ds, db_sub, sm,
             sub_m3, sub_sm_2nd, sub_sg, sub_fm, sub_oe1, sub_iks, sub_ss, sub_sgl, sub_sml, sub_ced, sub_vpp,
             sub_sd1, sub_ee, sub_ieh, sub_te, sub_sa1, sub_oe3, sub_cgi, sub_tel, sub_eel, sub_ssd,
-            sub_cem, sub_ecv, sub_cct, sub_pe3, sub_pe4, sub_ppl, sub_ied, sub_dp
+            sub_cem, sub_ecv, sub_cct, sub_pe3, sub_pe4, sub_ppl, sub_dp
         ])
         db.flush()
         
@@ -242,6 +241,33 @@ def seed_db():
                 "photo": None,
                 "emp_id": "EMP_CHEM",
                 "password": "chemistry123"
+            },
+            {
+                "email": "n.bhuvaneswari@ruraluniv.ac.in",
+                "name": "Mrs. N. Bhuvaneswari",
+                "designation": "Clerk",
+                "specialization": "Department Office & Administrative Support",
+                "photo": None,
+                "emp_id": "EMP_BHUV",
+                "password": "bhuvaneswari123"
+            },
+            {
+                "email": "muthukumar@ruraluniv.ac.in",
+                "name": "Mr. Muthukumar",
+                "designation": "Technical Assistant",
+                "specialization": "Laboratory Maintenance & Technical Support",
+                "photo": None,
+                "emp_id": "EMP_MUTH",
+                "password": "muthukumar123"
+            },
+            {
+                "email": "mathivanan@ruraluniv.ac.in",
+                "name": "Mr. Mathivanan",
+                "designation": "Clerk",
+                "specialization": "Department Office & Administrative Support",
+                "photo": None,
+                "emp_id": "EMP_MATH",
+                "password": "mathivanan123"
             }
         ]
         
@@ -320,14 +346,13 @@ def seed_db():
         assign_4th_pe3 = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=sub_pe3.id, class_id=class_ce_4th.id)
         assign_4th_pe4 = models.SubjectFacultyAssignment(faculty_id=uma_id, subject_id=sub_pe4.id, class_id=class_ce_4th.id)
         assign_4th_ppl = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=sub_ppl.id, class_id=class_ce_4th.id)
-        assign_4th_ied = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=sub_ied.id, class_id=class_ce_4th.id)
         assign_4th_dp = models.SubjectFacultyAssignment(faculty_id=balamurali_id, subject_id=sub_dp.id, class_id=class_ce_4th.id)
         
         db.add_all([
             assign_ce_1st_ds, assign_ce_1st_sm,
             assign_2nd_m3, assign_2nd_sm, assign_2nd_sg, assign_2nd_fm, assign_2nd_oe1, assign_2nd_iks, assign_2nd_ss, assign_2nd_sgl, assign_2nd_sml, assign_2nd_ced, assign_2nd_vpp,
             assign_3rd_sd1, assign_3rd_ee, assign_3rd_ieh, assign_3rd_te, assign_3rd_sa1, assign_3rd_oe3, assign_3rd_cgi, assign_3rd_tel, assign_3rd_eel, assign_3rd_ssd,
-            assign_4th_cem, assign_4th_ecv, assign_4th_cct, assign_4th_pe3, assign_4th_pe4, assign_4th_ppl, assign_4th_ied, assign_4th_dp
+            assign_4th_cem, assign_4th_ecv, assign_4th_cct, assign_4th_pe3, assign_4th_pe4, assign_4th_ppl, assign_4th_dp
         ])
         
         # (Default student users Grace Hopper, Ada Lovelace, and John Doe have been removed)
@@ -633,6 +658,9 @@ def seed_db():
         print("10. Mrs. S. Abinaya      : s.abinaya@ruraluniv.ac.in | abinaya123")
         print("11. Er. P. Marimuthu     : p.marimuthu@ruraluniv.ac.in | marimuthu123")
         print("12. Chemistry Dept       : chemistry@ruraluniv.ac.in | chemistry123")
+        print("13. Mrs. N. Bhuvaneswari : n.bhuvaneswari@ruraluniv.ac.in | bhuvaneswari123")
+        print("14. Mr. Muthukumar       : muthukumar@ruraluniv.ac.in | muthukumar123")
+        print("15. Mr. Mathivanan       : mathivanan@ruraluniv.ac.in | mathivanan123")
         print("===============================\n")
         
     except Exception as e:

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   CheckCircle,
   AlertCircle,
   Calendar,
   BookOpen,
   TrendingUp,
-  User
+  User,
+  Clock
 } from 'lucide-react';
 import {
   AreaChart,
@@ -31,6 +33,7 @@ interface SubjectPercentage {
   absent: number;
   half_day: number;
   leave: number;
+  late?: number;
   percentage: number;
 }
 
@@ -128,16 +131,22 @@ export const StudentDashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="text-center">
             <span className="block text-2xl font-extrabold">{stats?.overall_percentage ?? 0}%</span>
             <span className="text-xs text-slate-400 uppercase tracking-wider">Overall</span>
           </div>
-          <div className="h-10 w-px bg-white/20" />
+          <div className="h-10 w-px bg-white/20 hidden sm:block" />
           <div className="text-center">
             <span className="block text-2xl font-extrabold">{stats?.today_count ?? 0}</span>
             <span className="text-xs text-slate-400 uppercase tracking-wider">Today's Classes</span>
           </div>
+          <Link
+            to="/student/timetable"
+            className="flex items-center gap-2 px-3.5 py-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-custom text-xs font-semibold text-white transition-all ml-auto"
+          >
+            <Clock className="h-4 w-4" /> View Timetable
+          </Link>
         </div>
       </div>
 

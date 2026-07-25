@@ -7,7 +7,7 @@ from app.database.session import get_db
 from app.models import models
 from app.schemas import schemas
 from app.core import security
-from app.auth.auth_handler import RoleChecker
+from app.auth.auth_handler import RoleChecker, get_current_user
 from app.utils.helpers import log_activity
 
 router = APIRouter(prefix="/admin", tags=["Admin Operations"], dependencies=[Depends(RoleChecker(["admin"]))])
@@ -813,3 +813,23 @@ def get_student_analytics(student_id: str, db: Session = Depends(get_db)):
         "leave": leave,
         "rate": rate
     }
+
+# ----------------- STAFF DIRECTORY -----------------
+@router.get("/staff-directory", response_model=List[schemas.FacultyDetailOut])
+def get_admin_staff_directory(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    return db.query(models.Faculty).all()
+
+@router.get("/staff-directory/{faculty_id}", response_model=schemas.FacultyProfileOut)
+def get_admin_staff_member_profile(
+    faculty_id: str,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    faculty_member = db.query(models.Faculty).filter(models.Faculty.id == faculty_id).first()
+    if not faculty_member:
+        raise HTTPException(status_code=404, detail="Faculty member not found")
+    return faculty_member
+

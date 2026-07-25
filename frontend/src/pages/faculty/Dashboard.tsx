@@ -5,7 +5,8 @@ import {
   BookOpen, 
   FileCheck2, 
   ArrowRight,
-  ClipboardList
+  ClipboardList,
+  Clock
 } from 'lucide-react';
 import api from '../../services/api';
 import { useToast } from '../../components/Toast';
@@ -58,6 +59,25 @@ export const FacultyDashboard: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Quick Timetable Banner */}
+      <div className="bg-primary text-white p-5 rounded-custom flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-soft">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-white/10 rounded-custom">
+            <Clock className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold">Civil Engineering Department Timetable</h2>
+            <p className="text-xs text-slate-300">View 4-year class schedules & assigned periods</p>
+          </div>
+        </div>
+        <Link
+          to="/faculty/timetable"
+          className="px-4 py-2 bg-white text-primary font-semibold text-xs rounded-custom hover:bg-slate-100 transition-all shrink-0"
+        >
+          Open Class Timetable
+        </Link>
+      </div>
+
       {/* Counters Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="card-base flex items-center gap-4">

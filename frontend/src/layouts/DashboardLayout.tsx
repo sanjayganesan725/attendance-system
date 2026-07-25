@@ -17,7 +17,8 @@ import {
   BookOpen,
   Bell,
   Award,
-  Contact
+  Contact,
+  Clock
 } from 'lucide-react';
 
 export const DashboardLayout: React.FC = () => {
@@ -41,6 +42,7 @@ export const DashboardLayout: React.FC = () => {
   // Define links based on role
   const getLinks = () => {
     const common = [
+      { path: `/${user.role}/timetable`, label: 'Class Timetable', icon: Clock },
       { path: `/${user.role}/activities`, label: 'Daily Updates', icon: Megaphone },
       { path: `/${user.role}/reports`, label: 'Reports', icon: FileText },
       { path: `/${user.role}/profile`, label: 'Profile', icon: User },
@@ -53,6 +55,7 @@ export const DashboardLayout: React.FC = () => {
         { path: '/admin/faculty', label: 'Faculty', icon: GraduationCap },
         { path: '/admin/academic', label: 'Academic Setup', icon: BookOpen },
         { path: '/admin/holidays', label: 'Holidays', icon: Calendar },
+        { path: '/admin/staff-directory', label: 'Staff Directory', icon: Contact },
         ...common
       ];
     } else if (user.role === 'faculty') {
@@ -61,6 +64,7 @@ export const DashboardLayout: React.FC = () => {
         { path: '/faculty/take-attendance', label: 'Take Attendance', icon: Users },
         { path: '/faculty/history', label: 'Attendance History', icon: Calendar },
         { path: '/faculty/marks', label: 'Manage Marks', icon: Award },
+        { path: '/faculty/staff-directory', label: 'Staff Directory', icon: Contact },
         ...common
       ];
     } else {

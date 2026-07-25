@@ -32,6 +32,7 @@ import { FacultyManageMarks } from './pages/faculty/ManageMarks';
 import SharedProfile from './pages/shared/Profile';
 import SharedReports from './pages/shared/Reports';
 import { DailyUpdates } from './pages/shared/DailyUpdates';
+import SharedTimetable from './pages/shared/Timetable';
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,8 @@ export const App: React.FC = () => {
                 <Route path="faculty" element={<AdminFaculty />} />
                 <Route path="academic" element={<AdminAcademic />} />
                 <Route path="holidays" element={<AdminHolidays />} />
+                <Route path="staff-directory" element={<StudentStaffDirectory />} />
+                <Route path="timetable" element={<SharedTimetable />} />
                 <Route path="profile" element={<SharedProfile />} />
                 <Route path="reports" element={<SharedReports />} />
                 <Route path="activities" element={<DailyUpdates />} />
@@ -67,6 +70,8 @@ export const App: React.FC = () => {
                 <Route path="take-attendance" element={<FacultyTakeAttendance />} />
                 <Route path="history" element={<FacultyHistory />} />
                 <Route path="marks" element={<FacultyManageMarks />} />
+                <Route path="staff-directory" element={<StudentStaffDirectory />} />
+                <Route path="timetable" element={<SharedTimetable />} />
                 <Route path="profile" element={<SharedProfile />} />
                 <Route path="reports" element={<SharedReports />} />
                 <Route path="activities" element={<DailyUpdates />} />
@@ -78,6 +83,7 @@ export const App: React.FC = () => {
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="marks" element={<StudentMarks />} />
                 <Route path="staff-directory" element={<StudentStaffDirectory />} />
+                <Route path="timetable" element={<SharedTimetable />} />
                 <Route path="profile" element={<SharedProfile />} />
                 <Route path="reports" element={<SharedReports />} />
                 <Route path="activities" element={<DailyUpdates />} />
