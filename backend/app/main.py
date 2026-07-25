@@ -6,8 +6,13 @@ from app.core.config import settings
 from app.database.session import engine, Base
 from app.routes import auth, admin, faculty, student, reports
 
-# Automatically create all tables on startup (sqlite/pg)
+# Automatically create all tables & seed initial data on startup if empty
 Base.metadata.create_all(bind=engine)
+try:
+    from seed import auto_seed_if_empty
+    auto_seed_if_empty()
+except Exception as e:
+    print(f"Auto-seed startup check: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

@@ -8,9 +8,10 @@ from app.database.session import SessionLocal, engine, Base
 from app.models import models
 from app.core import security
 
-def seed_db():
-    print("Recreating database tables...")
-    Base.metadata.drop_all(bind=engine)
+def seed_db(drop_first=False):
+    if drop_first:
+        print("Recreating database tables...")
+        Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     
     db = SessionLocal()
@@ -669,5 +670,21 @@ def seed_db():
     finally:
         db.close()
 
+def auto_seed_if_empty():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        admin_exists = db.query(models.User).filter(models.User.email == "admin@attendance.com").first()
+        if not admin_exists:
+            print("Database is empty. Automatically seeding initial accounts & data...")
+            seed_db(drop_first=False)
+        else:
+            print("Database already initialized.")
+    except Exception as e:
+        print(f"Auto-seed check: {e}")
+    finally:
+        db.close()
+
 if __name__ == "__main__":
-    seed_db()
+    seed_db(drop_first=True)
+
