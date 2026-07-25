@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from app.core.config import settings
 
 # Configure CryptContext for password hashing
-pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 ALGORITHM = "HS256"
 
