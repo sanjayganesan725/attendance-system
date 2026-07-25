@@ -18,8 +18,8 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 def seed_database_endpoint():
     try:
         from seed import seed_db
-        seed_db(drop_first=False)
-        return {"status": "success", "message": "Database seeded successfully!"}
+        seed_db(drop_first=True)
+        return {"status": "success", "message": "Database fresh seeded successfully!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
