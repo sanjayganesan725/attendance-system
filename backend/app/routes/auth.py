@@ -14,6 +14,15 @@ from app.utils.helpers import log_activity
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+@router.get("/seed")
+def seed_database_endpoint():
+    try:
+        from seed import seed_db
+        seed_db(drop_first=False)
+        return {"status": "success", "message": "Database seeded successfully!"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 @router.post("/login", response_model=schemas.Token)
 def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     from sqlalchemy import func
