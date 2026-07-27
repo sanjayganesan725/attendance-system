@@ -17,7 +17,7 @@ export const AuthLayout: React.FC = () => {
         <img src={logo} alt="Gandhigram Rural Institute Logo" className="mx-auto h-24 w-auto mb-3" />
         <div className="text-xs font-bold tracking-widest text-slate-500 uppercase mb-2">CRT GRI</div>
         <h2 className="text-3xl font-extrabold text-primary tracking-tight">
-          Attendance MS
+          Attendance of CRT
         </h2>
         <p className="mt-2 text-sm text-slate-500">
           Clean, minimal college & corporate attendance tracking

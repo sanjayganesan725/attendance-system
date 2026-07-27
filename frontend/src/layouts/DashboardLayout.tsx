@@ -101,7 +101,7 @@ export const DashboardLayout: React.FC = () => {
           {!isCollapsed && (
             <div className="flex items-center gap-2 overflow-hidden">
               <img src={logo} alt="Logo" className="h-8 w-auto shrink-0" />
-              <span className="font-semibold text-primary text-sm tracking-tight leading-tight whitespace-nowrap">CRT ATTENDANCE</span>
+              <span className="font-semibold text-primary text-sm tracking-tight leading-tight whitespace-nowrap">ATTENDANCE OF CRT</span>
             </div>
           )}
           {isCollapsed && <img src={logo} alt="Logo" className="h-8 w-auto mx-auto shrink-0" />}

@@ -141,21 +141,6 @@ export const Login: React.FC = () => {
           {isSubmitting ? "Authenticating..." : "Sign In"}
         </button>
       </form>
-      
-      <div className="border-t border-borderLight pt-4 text-center">
-        <p className="text-xs font-semibold text-accent mb-1">
-          Password for ALL accounts: 123456
-        </p>
-        <p className="text-xs text-slate-400">
-          Admin: admin@attendance.com
-        </p>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Faculty: b.sangeethavani@ruraluniv.ac.in
-        </p>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Student: student@attendance.com
-        </p>
-      </div>
     </div>
   );
 };
