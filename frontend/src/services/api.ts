@@ -3,7 +3,7 @@ import axios from 'axios';
 // Production API URL fallback for Vercel
 const API_BASE_URL = import.meta.env.VITE_API_URL || (
   typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
-    ? 'https://lucky-berries-begin.loca.lt/api/v1'
+    ? 'https://tribunal-subsection-folks-thinking.trycloudflare.com/api/v1'
     : '/api/v1'
 );
 
