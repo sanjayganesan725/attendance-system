@@ -119,10 +119,10 @@ const SUBJECT_FACULTY_MAPPING = [
 ];
 
 export const SharedTimetable: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState<string>('All');
+  const [selectedYear, setSelectedYear] = useState<string>('I Year');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const years = ['All', 'I Year', 'II Year', 'III Year', 'IV Year'];
+  const years = ['I Year', 'II Year', 'III Year', 'IV Year', 'All'];
 
   const handlePrint = () => {
     window.print();
@@ -135,13 +135,13 @@ export const SharedTimetable: React.FC = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-1">
-              <Calendar className="h-4 w-4" /> Academic Schedule 2026-2027 (Odd Semester)
+              <Calendar className="h-4 w-4" /> B.Tech Civil Engineering Programme — Time Table (2026-2027 Odd Semester)
             </div>
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">
-              Department of Civil Engineering — Class Timetable
+              Department of Civil Engineering — 1st Year Timetable
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              The Gandhigram Rural Institute — Deemed to be University (Tentative Schedule)
+              The Gandhigram Rural Institute — Deemed to be University (Updated Tentative Schedule)
             </p>
           </div>
 
