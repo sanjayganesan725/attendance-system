@@ -89,6 +89,19 @@ def seed_db(drop_first=False):
         db_sub = models.Subject(name="Database Systems", code="CS102", department_id=cse.id, credits=3.0)
         sm = models.Subject(name="Solid Mechanics", code="CE101", department_id=ce.id, credits=3.0)
         
+        # B.Tech Civil Engineering 1st Year (1st Semester) subjects
+        sub_1st_phy = models.Subject(name="Physics (Introduction to Mechanics)", code="24CEUC1101", department_id=ce.id, credits=3.0)
+        sub_1st_eng = models.Subject(name="English for Technical Writing", code="24CEUC1102", department_id=ce.id, credits=3.0)
+        sub_1st_m1 = models.Subject(name="Mathematics-I", code="24MAUB1101", department_id=ce.id, credits=4.0)
+        sub_1st_be = models.Subject(name="Basic Electrical & Electronics for Civil Engg.", code="24CEUC1104", department_id=ce.id, credits=3.0)
+        sub_1st_py = models.Subject(name="Python Programming", code="24CEUC1105", department_id=ce.id, credits=3.0)
+        sub_1st_yoga = models.Subject(name="Yoga Education", code="24CEUV1101", department_id=ce.id, credits=1.0)
+        sub_1st_phyl = models.Subject(name="Physics Laboratory", code="24CEUC1106", department_id=ce.id, credits=1.5)
+        sub_1st_bel = models.Subject(name="Basic Electrical & Electronics Lab", code="24CEUC1107", department_id=ce.id, credits=1.5)
+        sub_1st_pyl = models.Subject(name="Python Programming Laboratory", code="24CEUC1108", department_id=ce.id, credits=1.5)
+        sub_1st_dt = models.Subject(name="Design Thinking", code="24CEUC1109", department_id=ce.id, credits=2.0)
+        sub_1st_idea = models.Subject(name="Idea Laboratory Workshop", code="24CEUC1110", department_id=ce.id, credits=2.0)
+
         # B.Tech Civil Engineering 2nd Year (3rd Semester) subjects
         sub_m3 = models.Subject(name="Mathematics III", code="24MAUB2103", department_id=ce.id, credits=4.0)
         sub_sm_2nd = models.Subject(name="Solid Mechanics", code="24CEUC2108", department_id=ce.id, credits=3.0)
@@ -125,6 +138,7 @@ def seed_db(drop_first=False):
         
         db.add_all([
             ds, db_sub, sm,
+            sub_1st_phy, sub_1st_eng, sub_1st_m1, sub_1st_be, sub_1st_py, sub_1st_yoga, sub_1st_phyl, sub_1st_bel, sub_1st_pyl, sub_1st_dt, sub_1st_idea,
             sub_m3, sub_sm_2nd, sub_sg, sub_fm, sub_oe1, sub_iks, sub_ss, sub_sgl, sub_sml, sub_ced, sub_vpp,
             sub_sd1, sub_ee, sub_ieh, sub_te, sub_sa1, sub_oe3, sub_cgi, sub_tel, sub_eel, sub_ssd,
             sub_cem, sub_ecv, sub_cct, sub_pe3, sub_pe4, sub_ppl, sub_dp
@@ -311,9 +325,18 @@ def seed_db(drop_first=False):
         chemistry_id = staff_profiles["EMP_CHEM"].id
 
         # 8. Assign Faculty to Classes & Subjects
-        # 1st Year (kept simple placeholders)
-        assign_ce_1st_ds = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=ds.id, class_id=class_ce_1st.id)
-        assign_ce_1st_sm = models.SubjectFacultyAssignment(faculty_id=infant_id, subject_id=sm.id, class_id=class_ce_1st.id)
+        # 1st Year (B.Tech Civil Eng 1st Year)
+        assign_1st_phy = models.SubjectFacultyAssignment(faculty_id=balamurali_id, subject_id=sub_1st_phy.id, class_id=class_ce_1st.id)
+        assign_1st_eng = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=sub_1st_eng.id, class_id=class_ce_1st.id)
+        assign_1st_m1 = models.SubjectFacultyAssignment(faculty_id=vinoth_id, subject_id=sub_1st_m1.id, class_id=class_ce_1st.id)
+        assign_1st_be = models.SubjectFacultyAssignment(faculty_id=jegadhesh_id, subject_id=sub_1st_be.id, class_id=class_ce_1st.id)
+        assign_1st_py = models.SubjectFacultyAssignment(faculty_id=uma_id, subject_id=sub_1st_py.id, class_id=class_ce_1st.id)
+        assign_1st_yoga = models.SubjectFacultyAssignment(faculty_id=lakshmi_id, subject_id=sub_1st_yoga.id, class_id=class_ce_1st.id)
+        assign_1st_phyl = models.SubjectFacultyAssignment(faculty_id=balamurali_id, subject_id=sub_1st_phyl.id, class_id=class_ce_1st.id)
+        assign_1st_bel = models.SubjectFacultyAssignment(faculty_id=jegadhesh_id, subject_id=sub_1st_bel.id, class_id=class_ce_1st.id)
+        assign_1st_pyl = models.SubjectFacultyAssignment(faculty_id=uma_id, subject_id=sub_1st_pyl.id, class_id=class_ce_1st.id)
+        assign_1st_dt = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=sub_1st_dt.id, class_id=class_ce_1st.id)
+        assign_1st_idea = models.SubjectFacultyAssignment(faculty_id=jeseema_id, subject_id=sub_1st_idea.id, class_id=class_ce_1st.id)
         
         # 2nd Year (Semester III)
         assign_2nd_m3 = models.SubjectFacultyAssignment(faculty_id=vinoth_id, subject_id=sub_m3.id, class_id=class_ce_2nd.id)
@@ -350,7 +373,7 @@ def seed_db(drop_first=False):
         assign_4th_dp = models.SubjectFacultyAssignment(faculty_id=balamurali_id, subject_id=sub_dp.id, class_id=class_ce_4th.id)
         
         db.add_all([
-            assign_ce_1st_ds, assign_ce_1st_sm,
+            assign_1st_phy, assign_1st_eng, assign_1st_m1, assign_1st_be, assign_1st_py, assign_1st_yoga, assign_1st_phyl, assign_1st_bel, assign_1st_pyl, assign_1st_dt, assign_1st_idea,
             assign_2nd_m3, assign_2nd_sm, assign_2nd_sg, assign_2nd_fm, assign_2nd_oe1, assign_2nd_iks, assign_2nd_ss, assign_2nd_sgl, assign_2nd_sml, assign_2nd_ced, assign_2nd_vpp,
             assign_3rd_sd1, assign_3rd_ee, assign_3rd_ieh, assign_3rd_te, assign_3rd_sa1, assign_3rd_oe3, assign_3rd_cgi, assign_3rd_tel, assign_3rd_eel, assign_3rd_ssd,
             assign_4th_cem, assign_4th_ecv, assign_4th_cct, assign_4th_pe3, assign_4th_pe4, assign_4th_ppl, assign_4th_dp
