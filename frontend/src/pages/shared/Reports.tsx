@@ -23,8 +23,6 @@ export const SharedReports: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedStudent, setSelectedStudent] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
 
   const [isExporting, setIsExporting] = useState(false);
 
@@ -87,16 +85,10 @@ export const SharedReports: React.FC = () => {
         params.append('student_id', selectedStudent);
       }
 
-      if (startDate) params.append('start_date', startDate);
-      if (endDate) params.append('end_date', endDate);
-
       // Trigger download using direct URL redirect
       const downloadUrl = `/api/v1/reports/export?${params.toString()}`;
       
       // Retrieve JWT token
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      
-      // Rather than a normal link, fetch it with auth header and create blob URL
       const response = await api.get(downloadUrl, {
         responseType: 'blob'
       });
@@ -213,32 +205,6 @@ export const SharedReports: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Date Ranges */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-borderLight pt-6">
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">
-              Start Date
-            </label>
-            <input 
-              type="date" 
-              className="input-field" 
-              value={startDate} 
-              onChange={(e) => setStartDate(e.target.value)} 
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">
-              End Date
-            </label>
-            <input 
-              type="date" 
-              className="input-field" 
-              value={endDate} 
-              onChange={(e) => setEndDate(e.target.value)} 
-            />
-          </div>
-        </div>
 
         {/* Action Button */}
         <div className="border-t border-borderLight pt-6 flex justify-end">

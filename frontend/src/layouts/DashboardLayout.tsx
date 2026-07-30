@@ -14,6 +14,8 @@ import {
   Menu, 
   ChevronLeft, 
   ChevronRight,
+  UserCheck,
+  CheckSquare,
   BookOpen,
   Bell,
   Award,
@@ -51,6 +53,8 @@ export const DashboardLayout: React.FC = () => {
     if (user.role === 'admin') {
       return [
         { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+        { path: '/admin/staff-attendance', label: 'Staff Attendance', icon: UserCheck },
+        { path: '/admin/take-attendance', label: 'Take Student Attendance', icon: CheckSquare },
         { path: '/admin/students', label: 'Students', icon: Users },
         { path: '/admin/faculty', label: 'Faculty', icon: GraduationCap },
         { path: '/admin/academic', label: 'Academic Setup', icon: BookOpen },

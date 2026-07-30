@@ -16,9 +16,12 @@ interface StudentMarkRow {
   student_id: string;
   roll_number: string;
   full_name: string;
-  cfa: number | string | null;
-  ese: number | string | null;
+  cfa1: number | string | null;
+  cfa2: number | string | null;
+  cfa?: number | string | null;
+  ese?: number | string | null;
   total?: number | null;
+  percentage?: number | null;
 }
 
 export const FacultyManageMarks: React.FC = () => {
@@ -72,7 +75,6 @@ export const FacultyManageMarks: React.FC = () => {
     );
     setSubjects(uniqueSubjects);
     
-    // Reset selected subject if it's no longer valid
     if (selectedSubject && !uniqueSubjects.some((s: any) => s.id === selectedSubject)) {
       setSelectedSubject('');
     }
@@ -84,11 +86,10 @@ export const FacultyManageMarks: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await api.get(`/faculty/classes/${selectedClass}/subjects/${selectedSubject}/marks`);
-      // Standardize null to empty string for clean input fields
       const formatted = response.data.map((r: any) => ({
         ...r,
-        cfa: r.cfa !== null ? r.cfa : '',
-        ese: r.ese !== null ? r.ese : ''
+        cfa1: r.cfa1 !== null && r.cfa1 !== undefined ? r.cfa1 : (r.cfa !== null && r.cfa !== undefined ? r.cfa : ''),
+        cfa2: r.cfa2 !== null && r.cfa2 !== undefined ? r.cfa2 : (r.ese !== null && r.ese !== undefined ? r.ese : '')
       }));
       setStudents(formatted);
     } catch (err) {
@@ -103,17 +104,15 @@ export const FacultyManageMarks: React.FC = () => {
   }, [selectedClass, selectedSubject]);
 
   // Handle mark input changes
-  const handleMarkChange = (studentId: string, field: 'cfa' | 'ese', value: string) => {
+  const handleMarkChange = (studentId: string, field: 'cfa1' | 'cfa2', value: string) => {
     setStudents(prev => prev.map(s => {
       if (s.student_id !== studentId) return s;
       
-      // Basic input validation: enforce max bounds
       let cleanVal: number | string = value;
       if (value !== '') {
         const num = parseInt(value);
         if (isNaN(num)) return s;
-        if (field === 'cfa' && num > 40) cleanVal = 40;
-        else if (field === 'ese' && num > 60) cleanVal = 60;
+        if (num > 50) cleanVal = 50;
         else if (num < 0) cleanVal = 0;
         else cleanVal = num;
       }
@@ -140,14 +139,15 @@ export const FacultyManageMarks: React.FC = () => {
         subject_id: selectedSubject,
         records: students.map(s => ({
           student_id: s.student_id,
-          cfa: s.cfa === '' ? null : s.cfa,
-          ese: s.ese === '' ? null : s.ese
+          cfa1: s.cfa1 === '' ? null : s.cfa1,
+          cfa2: s.cfa2 === '' ? null : s.cfa2,
+          cfa: s.cfa1 === '' ? null : s.cfa1,
+          ese: s.cfa2 === '' ? null : s.cfa2
         }))
       };
 
       await api.post('/faculty/marks/submit', payload);
       toast("Student marks updated successfully!");
-      // Reload lists
       fetchStudentMarks();
     } catch (err: any) {
       toast("Could not save marks card details.", "error");
@@ -156,7 +156,6 @@ export const FacultyManageMarks: React.FC = () => {
     }
   };
 
-  // Filter students based on search query
   const filteredStudents = students.filter(s => 
     s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     s.roll_number.includes(searchQuery)
@@ -171,7 +170,7 @@ export const FacultyManageMarks: React.FC = () => {
         </button>
         <div>
           <h2 className="text-xl font-bold text-primary">Manage Marks</h2>
-          <p className="text-sm text-slate-500">Record and submit student CFA (Max 40) and ESE (Max 60) marks card</p>
+          <p className="text-sm text-slate-500">Record and submit student CFA 1 (Max 50) and CFA 2 (Max 50) marks card</p>
         </div>
       </div>
 
@@ -253,48 +252,50 @@ export const FacultyManageMarks: React.FC = () => {
                     <tr>
                       <th className="table-th">Roll Number</th>
                       <th className="table-th">Full Name</th>
-                      <th className="table-th text-center w-36">CFA (Max 40)</th>
-                      <th className="table-th text-center w-36">ESE (Max 60)</th>
-                      <th className="table-th text-center w-36">Total (Max 100)</th>
+                      <th className="table-th text-center w-36">CFA 1 (Max 50)</th>
+                      <th className="table-th text-center w-36">CFA 2 (Max 50)</th>
+                      <th className="table-th text-center w-32">Total (Max 100)</th>
+                      <th className="table-th text-center w-32">Percentage (%)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredStudents.map((s) => {
-                      const cfaVal = s.cfa !== '' ? Number(s.cfa) : 0;
-                      const eseVal = s.ese !== '' ? Number(s.ese) : 0;
-                      const totalVal = (s.cfa !== '' || s.ese !== '') ? (cfaVal + eseVal) : null;
-                      
+                      const c1Val = s.cfa1 !== '' ? Number(s.cfa1) : null;
+                      const c2Val = s.cfa2 !== '' ? Number(s.cfa2) : null;
+                      const totalVal = (c1Val !== null || c2Val !== null) ? ((c1Val || 0) + (c2Val || 0)) : null;
+                      const percVal = totalVal !== null ? Math.round((totalVal / 100) * 100 * 10) / 10 : null;
+
                       return (
                         <tr key={s.student_id} className="hover:bg-slate-50/50">
                           <td className="table-td font-semibold text-slate-700">{s.roll_number}</td>
                           <td className="table-td text-primary font-medium">{s.full_name}</td>
                           
-                          {/* CFA Input */}
+                          {/* CFA 1 Input */}
                           <td className="table-td">
                             <div className="flex justify-center">
                               <input 
                                 type="number" 
                                 min="0"
-                                max="40"
-                                placeholder="CFA"
+                                max="50"
+                                placeholder="CFA 1"
                                 className="input-field text-center w-24 py-1"
-                                value={s.cfa !== null ? s.cfa : ''}
-                                onChange={(e) => handleMarkChange(s.student_id, 'cfa', e.target.value)}
+                                value={s.cfa1 !== null ? s.cfa1 : ''}
+                                onChange={(e) => handleMarkChange(s.student_id, 'cfa1', e.target.value)}
                               />
                             </div>
                           </td>
 
-                          {/* ESE Input */}
+                          {/* CFA 2 Input */}
                           <td className="table-td">
                             <div className="flex justify-center">
                               <input 
                                 type="number" 
                                 min="0"
-                                max="60"
-                                placeholder="ESE"
+                                max="50"
+                                placeholder="CFA 2"
                                 className="input-field text-center w-24 py-1"
-                                value={s.ese !== null ? s.ese : ''}
-                                onChange={(e) => handleMarkChange(s.student_id, 'ese', e.target.value)}
+                                value={s.cfa2 !== null ? s.cfa2 : ''}
+                                onChange={(e) => handleMarkChange(s.student_id, 'cfa2', e.target.value)}
                               />
                             </div>
                           </td>
@@ -311,6 +312,19 @@ export const FacultyManageMarks: React.FC = () => {
                               {totalVal !== null ? `${totalVal}` : 'N/A'}
                             </span>
                           </td>
+
+                          {/* Percentage badge */}
+                          <td className="table-td text-center">
+                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                              percVal !== null 
+                                ? percVal >= 50 
+                                  ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' 
+                                  : 'bg-rose-50 text-rose-700 border border-rose-100'
+                                : 'bg-slate-50 text-slate-400'
+                            }`}>
+                              {percVal !== null ? `${percVal}%` : 'N/A'}
+                            </span>
+                          </td>
                         </tr>
                       );
                     })}
@@ -324,3 +338,5 @@ export const FacultyManageMarks: React.FC = () => {
     </div>
   );
 };
+
+export default FacultyManageMarks;

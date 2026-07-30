@@ -165,12 +165,6 @@ export const AdminDashboard: React.FC = () => {
                 </span>
                 <span className="text-primary font-bold">{data.today_stats.absent}</span>
               </div>
-              <div className="flex justify-between items-center text-sm font-medium">
-                <span className="flex items-center gap-2 text-slate-600">
-                  <Clock className="h-4 w-4 text-amber-500" /> Late
-                </span>
-                <span className="text-primary font-bold">{data.today_stats.late}</span>
-              </div>
             </div>
           </div>
           <div className="text-xs text-slate-400 border-t border-borderLight pt-4 mt-4 text-center">

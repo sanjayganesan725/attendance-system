@@ -224,7 +224,7 @@ export const FacultyHistory: React.FC = () => {
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Attendance Status</label>
             <div className="flex bg-slate-100 p-0.5 rounded-lg w-fit">
-              {['Present', 'Absent', 'Late', 'Leave'].map((status) => (
+              {['Present', 'Absent'].map((status) => (
                 <button
                   key={status}
                   type="button"

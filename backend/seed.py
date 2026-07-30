@@ -330,7 +330,7 @@ def seed_db(drop_first=False):
 
         # 3rd Year (Semester V)
         assign_3rd_sd1 = models.SubjectFacultyAssignment(faculty_id=balamurali_id, subject_id=sub_sd1.id, class_id=class_ce_3rd.id)
-        assign_3rd_ee = models.SubjectFacultyAssignment(faculty_id=jegadhesh_id, subject_id=sub_ee.id, class_id=class_ce_3rd.id)
+        assign_3rd_ee = models.SubjectFacultyAssignment(faculty_id=marimuthu_id, subject_id=sub_ee.id, class_id=class_ce_3rd.id)
         assign_3rd_ieh = models.SubjectFacultyAssignment(faculty_id=sangeethavani_id, subject_id=sub_ieh.id, class_id=class_ce_3rd.id)
         assign_3rd_te = models.SubjectFacultyAssignment(faculty_id=uma_id, subject_id=sub_te.id, class_id=class_ce_3rd.id)
         assign_3rd_sa1 = models.SubjectFacultyAssignment(faculty_id=jeseema_id, subject_id=sub_sa1.id, class_id=class_ce_3rd.id)
@@ -546,7 +546,66 @@ def seed_db(drop_first=False):
             ce_4th_student_profiles.append(profile)
         db.flush()
 
-        # (Extra 1st year students have been removed)
+        # Seed official 1st Year B.Tech Civil Engineering students (Batch: 2026-2030)
+        ce_students_1st_data = [
+            ("26209001", "RAHUL KARTHICK C"),
+            ("26209002", "SANGEETHA T"),
+            ("26209003", "JAYAVEERAPRAKASAR S"),
+            ("26209004", "KALAISELVAN K"),
+            ("26209005", "RAJAGAUTHAM P M"),
+            ("26209006", "SOOSAIRAJ A"),
+            ("26209007", "MOHAMED AZARUDEEN J"),
+            ("26209008", "JAYABHARATHI R"),
+            ("26209009", "KARLIE KENZIE L G"),
+            ("26209010", "SENTHAMIL SELVAN S"),
+            ("26209011", "SURYA S"),
+            ("26209012", "HARINI T"),
+            ("26209013", "ESRON J"),
+            ("26209014", "SUSI M"),
+            ("26209015", "JAI KRISH S"),
+            ("26209016", "JASVANTHIKA M S"),
+            ("26209017", "KARTHIKASHRI G"),
+            ("26209018", "DEVAMITHA S"),
+            ("26209019", "VANISHA S"),
+            ("26209020", "MUTHU KUMAR M"),
+            ("26209021", "ARAVIND NATARAJAN P"),
+            ("26209023", "MEHDI C S"),
+            ("26209024", "ARSHARA A S"),
+            ("26209025", "THENMUHIL M"),
+            ("26209027", "VARSHA M"),
+            ("26209028", "MUKUNDAN R V"),
+            ("26209029", "PREM T"),
+            ("26209030", "POOJA SHREE I"),
+            ("26209031", "SAMEEHA FATHIMA A"),
+            ("26209032", "RITHISHRAMU R")
+        ]
+        
+        ce_1st_student_profiles = []
+        for idx, (roll_no, name) in enumerate(ce_students_1st_data, start=1):
+            email = f"s{roll_no}@attendance.com"
+            user = models.User(
+                email=email,
+                hashed_password=security.get_password_hash("123456"),
+                role="student",
+                full_name=name,
+                phone=f"555{1000000 + idx}",
+                is_active=True
+            )
+            db.add(user)
+            db.flush()
+            
+            profile = models.Student(
+                id=user.id,
+                roll_number=roll_no,
+                registration_number=f"REG-{roll_no}",
+                department_id=ce.id,
+                class_id=class_ce_1st.id,
+                academic_year_id=ay.id,
+                semester_id=sem.id
+            )
+            db.add(profile)
+            ce_1st_student_profiles.append(profile)
+        db.flush()
         
         # (Historical attendance records have been cleared so all students start with zero attendance)
             
@@ -633,13 +692,15 @@ def seed_db(drop_first=False):
             ).all()
             sub_ids = list(set([a.subject_id for a in assignments]))
             for sub_id in sub_ids:
-                cfa_mark = random.randint(24, 38)
-                ese_mark = random.randint(30, 56)
+                cfa1_mark = random.randint(32, 48)
+                cfa2_mark = random.randint(30, 49)
                 mark = models.StudentMark(
                     student_id=stud.id,
                     subject_id=sub_id,
-                    cfa=cfa_mark,
-                    ese=ese_mark
+                    cfa1=cfa1_mark,
+                    cfa2=cfa2_mark,
+                    cfa=cfa1_mark,
+                    ese=cfa2_mark
                 )
                 db.add(mark)
                 

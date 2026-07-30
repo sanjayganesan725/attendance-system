@@ -75,8 +75,6 @@ export const StudentHistory: React.FC = () => {
             <option value="">All Statuses</option>
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
-            <option value="Late">Late</option>
-            <option value="Leave">Leave</option>
           </select>
         </div>
       </div>

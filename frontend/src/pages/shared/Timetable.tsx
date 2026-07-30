@@ -26,33 +26,33 @@ const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
 const TIMETABLE_DATA: Record<string, Record<string, Record<number, string>>> = {
   MONDAY: {
     'I Year': { 1: 'PHYSICS', 2: 'ENGLISH', 3: 'MATHS-I', 4: 'PYTHON LAB', 5: 'BE&ECEA', 6: 'PYTHON' },
-    'II Year': { 1: 'SM', 2: 'MATHS III', 3: 'LIBRARY', 4: 'FM', 5: 'CADD LAB', 6: 'CADD LAB' },
-    'III Year': { 1: 'SD 1', 2: 'IE&HS', 3: 'TE', 4: 'GURUKULA', 5: 'EE', 6: 'CES&GI' },
+    'II Year': { 1: 'SM', 2: 'LIBRARY', 3: 'MATHS III', 4: 'FM', 5: 'CADD LAB', 6: 'CADD LAB' },
+    'III Year': { 1: 'SD 1', 2: 'IE&HS', 3: 'TE', 4: 'TE', 5: 'EE', 6: 'CES&GI' },
     'IV Year': { 1: 'PE IV', 2: 'TUTORIAL', 3: 'DSS', 4: 'GURUKULA', 5: 'PE V', 6: 'PE III' },
   },
   TUESDAY: {
     'I Year': { 1: 'BE&ECEA LAB', 2: 'BE&ECEA LAB', 3: 'BE&ECEA LAB', 4: 'PYTHON', 5: 'IDEA LAB', 6: 'IDEA LAB' },
-    'II Year': { 1: 'FM', 2: 'SM LAB', 3: 'SM LAB', 4: 'SM LAB', 5: 'S&G', 6: 'SANTHI SENA' },
-    'III Year': { 1: 'SA I', 2: 'SA I', 3: 'TE', 4: 'IE&HS', 5: 'EE', 6: 'SD 1' },
+    'II Year': { 1: 'S&G', 2: 'SM LAB', 3: 'SM LAB', 4: 'SM LAB', 5: 'MATHS III', 6: 'SANTHI SENA' },
+    'III Year': { 1: 'SA I', 2: 'SA I', 3: 'SD 1', 4: 'IE&HS', 5: 'EE', 6: 'Software skill -II' },
     'IV Year': { 1: 'CEM', 2: 'PE III', 3: 'PROJECT II', 4: 'PROJECT II', 5: 'DSS', 6: 'LIBRARY' },
   },
   WEDNESDAY: {
     'I Year': { 1: 'BE&ECEA', 2: 'MATHS 1', 3: 'DESIGN THINKING', 4: 'DESIGN THINKING', 5: 'PHYSICS', 6: 'ENGLISH' },
-    'II Year': { 1: 'S&G', 2: 'SM', 3: 'Shramadhan', 4: 'MATHS III', 5: 'CADD LAB', 6: 'CADD LAB' },
-    'III Year': { 1: 'EE LAB', 2: 'EE LAB', 3: 'EE LAB', 4: 'Software skill -II', 5: 'TE', 6: 'OE III' },
-    'IV Year': { 1: 'CEM', 2: 'PE IV', 3: 'PROJECT II', 4: 'PROJECT II', 5: 'PE V', 6: 'TUTORIAL' },
+    'II Year': { 1: 'S&G', 2: 'SM', 3: 'GURUKULA', 4: 'MATHS III', 5: 'CADD LAB', 6: 'CADD LAB' },
+    'III Year': { 1: 'EE LAB', 2: 'EE LAB', 3: 'EE LAB', 4: 'GURUKULA', 5: 'TE', 6: 'OE III' },
+    'IV Year': { 1: 'CEM', 2: 'PROJECT II', 3: 'PE IV', 4: 'PROJECT II', 5: 'PE V', 6: 'TUTORIAL' },
   },
   THURSDAY: {
-    'I Year': { 1: 'ENGLISH', 2: 'YOGA', 3: 'MATHS I', 4: 'BE&ECEA', 5: 'PYTHON LAB', 6: 'PYTHON LAB' },
+    'I Year': { 1: 'ENGLISH', 2: 'YOGA', 3: 'MATHS 1', 4: 'BE&ECEA', 5: 'PYTHON LAB', 6: 'PYTHON LAB' },
     'II Year': { 1: 'S&G LAB', 2: 'S&G LAB', 3: 'S&G LAB', 4: 'LIBRARY', 5: 'IKS', 6: 'IKS' },
-    'III Year': { 1: 'SA I', 2: 'LIBRARY', 3: 'SD 1', 4: 'Tutorial', 5: 'Shramadhan', 6: 'IE&HS / Shramadhan' },
+    'III Year': { 1: 'SA I', 2: 'LIBRARY', 3: 'SD 1', 4: 'Tutorial (SD1)', 5: 'Shramadhan', 6: 'IE&HS' },
     'IV Year': { 1: 'DSS', 2: 'CEM', 3: 'PE III', 4: 'DBCS', 5: 'DBCS', 6: 'Shramadhan' },
   },
   FRIDAY: {
     'I Year': { 1: 'PHYSICS LAB', 2: 'PHYSICS LAB', 3: 'PHYSICS LAB', 4: 'PYTHON', 5: 'MATHS 1', 6: 'PHYSICS' },
-    'II Year': { 1: 'FM', 2: 'SM', 3: 'GURUKULA', 4: 'S&G', 5: 'MATHS III', 6: 'PRAYER' },
+    'II Year': { 1: 'FM', 2: 'SM', 3: 'FM', 4: 'S&G', 5: 'MATHS III', 6: 'PRAYER' },
     'III Year': { 1: 'CES&GI', 2: 'TE LAB', 3: 'TE LAB', 4: 'TE LAB', 5: 'EE', 6: 'EE' },
-    'IV Year': { 1: 'PE IV', 2: 'DBCS', 3: 'PE V', 4: 'PROJECT II', 5: 'PROJECT II', 6: 'PROJECT II' },
+    'IV Year': { 1: 'PE IV', 2: 'DBCS', 3: 'PROJECT II', 4: 'PROJECT II', 5: 'PE V', 6: 'PRAYER' },
   },
 };
 
@@ -93,7 +93,7 @@ const SUBJECT_FACULTY_MAPPING = [
     year: 'III Year',
     subjects: [
       { code: 'SD 1', name: 'Structural Design - I (Design of Concrete Structures)', faculty: 'Dr. R. T. Balamurali' },
-      { code: 'EE', name: 'Environmental Engineering', faculty: 'Mr. G. Jegadhesh' },
+      { code: 'EE', name: 'Environmental Engineering', faculty: 'Er. P. Marimuthu' },
       { code: 'IE&HS', name: 'Irrigation Engineering & Hydraulic Structures', faculty: 'Dr. B. Sangeethavani' },
       { code: 'TE', name: 'Transportation Engineering', faculty: 'Dr. S. Uma' },
       { code: 'SA I', name: 'Structural Analysis - I', faculty: 'Dr. J. Jeseema Nisrin' },

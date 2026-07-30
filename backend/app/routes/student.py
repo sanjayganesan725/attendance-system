@@ -195,10 +195,13 @@ def get_subject_wise_percentage(
             
         attended_count = late_weight_adjust(student_records)
 
+        is_lab = any(kw in sub.name.lower() or kw in sub.code.lower() for kw in ["lab", "laboratory", "practical"])
+
         result.append({
             "subject_id": sub.id,
             "subject_name": sub.name,
             "subject_code": sub.code,
+            "is_lab": is_lab,
             "total_conducted": total_conducted,
             "attended": attended_count,
             "present": present,
@@ -252,13 +255,20 @@ def get_student_marks(
     result = []
     for sub in subjects:
         mark = marks_map.get(sub.id)
+        c1 = mark.get_cfa1 if mark else None
+        c2 = mark.get_cfa2 if mark else None
+        tot = mark.total if mark else None
+        perc = mark.percentage if mark else None
         result.append({
             "id": mark.id if mark else f"temp-{sub.id}",
             "student_id": student.id,
             "subject_id": sub.id,
-            "cfa": mark.cfa if mark else None,
-            "ese": mark.ese if mark else None,
-            "total": mark.total if mark else None,
+            "cfa1": c1,
+            "cfa2": c2,
+            "cfa": c1,
+            "ese": c2,
+            "total": tot,
+            "percentage": perc,
             "subject": sub
         })
     return result

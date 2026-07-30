@@ -386,6 +386,8 @@ class HolidayOut(BaseModel):
 
 # ----------------- STUDENT MARK SCHEMAS -----------------
 class StudentMarkBase(BaseModel):
+    cfa1: Optional[int] = None
+    cfa2: Optional[int] = None
     cfa: Optional[int] = None
     ese: Optional[int] = None
 
@@ -394,6 +396,8 @@ class StudentMarkCreate(StudentMarkBase):
     subject_id: str
 
 class StudentMarkUpdate(BaseModel):
+    cfa1: Optional[int] = None
+    cfa2: Optional[int] = None
     cfa: Optional[int] = None
     ese: Optional[int] = None
 
@@ -401,9 +405,13 @@ class StudentMarkOut(BaseModel):
     id: str
     student_id: str
     subject_id: str
+    cfa1: Optional[int] = None
+    cfa2: Optional[int] = None
     cfa: Optional[int] = None
     ese: Optional[int] = None
+    attendance_percentage: Optional[float] = None
     total: Optional[int] = None
+    percentage: Optional[float] = None
     subject: Optional[SubjectOut] = None
 
     class Config:
@@ -411,6 +419,8 @@ class StudentMarkOut(BaseModel):
 
 class StudentMarkRecord(BaseModel):
     student_id: str
+    cfa1: Optional[Union[int, str]] = None
+    cfa2: Optional[Union[int, str]] = None
     cfa: Optional[Union[int, str]] = None
     ese: Optional[Union[int, str]] = None
 
@@ -418,3 +428,14 @@ class BatchMarksSubmit(BaseModel):
     class_id: str
     subject_id: str
     records: List[StudentMarkRecord]
+
+# ----------------- STAFF ATTENDANCE SCHEMAS -----------------
+class StaffAttendanceRecord(BaseModel):
+    faculty_id: str
+    status: str
+    remarks: Optional[str] = None
+
+class StaffAttendanceSubmit(BaseModel):
+    date: date
+    records: List[StaffAttendanceRecord]
+

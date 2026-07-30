@@ -10,6 +10,7 @@ import {
 import api from '../../services/api';
 import { useToast } from '../../components/Toast';
 import { TableSkeleton } from '../../components/Skeleton';
+import { useAuth } from '../../context/AuthContext';
 
 interface StudentData {
   id: string;
@@ -47,7 +48,7 @@ export const FacultyTakeAttendance: React.FC = () => {
   const [holidayName, setHolidayName] = useState('');
   
   // Grid checklist state
-  // key: student_id, value: { status, remarks }
+  const { user } = useAuth();
   const [records, setRecords] = useState<Record<string, { status: string; remarks: string }>>({});
 
   useEffect(() => {
@@ -56,10 +57,18 @@ export const FacultyTakeAttendance: React.FC = () => {
         const statsRes = await api.get('/faculty/dashboard/stats');
         setAssignments(statsRes.data.assignments);
         
-        // Populate classes list
-        const uniqueClasses = Array.from(
+        let uniqueClasses = Array.from(
           new Map(statsRes.data.assignments.map((a: any) => [a.class_id, { id: a.class_id, name: a.class_name }])).values()
         );
+
+        if (user?.role === 'admin') {
+          const adminClsRes = await api.get('/admin/classes');
+          const adminClasses = adminClsRes.data.map((c: any) => ({ id: c.id, name: c.name }));
+          uniqueClasses = Array.from(
+            new Map([...uniqueClasses, ...adminClasses].map((c: any) => [c.id, c])).values()
+          );
+        }
+
         setClasses(uniqueClasses);
         
         const holidaysRes = await api.get('/faculty/holidays');
@@ -69,7 +78,7 @@ export const FacultyTakeAttendance: React.FC = () => {
       }
     };
     fetchOptionsAndHolidays();
-  }, [toast]);
+  }, [toast, user]);
 
   // Dynamically filter subjects based on selected class
   useEffect(() => {
@@ -193,7 +202,7 @@ export const FacultyTakeAttendance: React.FC = () => {
 
       await api.post('/faculty/attendance/submit', payload);
       toast("Attendance sheet submitted successfully!");
-      navigate('/faculty');
+      navigate(user?.role === 'admin' ? '/admin' : '/faculty');
     } catch (err: any) {
       const msg = err.response?.data?.detail || "Could not save attendance.";
       toast(msg, "error");
@@ -202,11 +211,16 @@ export const FacultyTakeAttendance: React.FC = () => {
     }
   };
 
+  const currentAssignment = assignments.find(
+    a => a.class_id === selectedClass && a.subject_id === selectedSubject
+  );
+  const assignedFacultyName = currentAssignment?.faculty_name || 'Unassigned';
+
   return (
     <div className="space-y-6">
       {/* Header navigations */}
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/faculty')} className="btn-secondary p-2">
+        <button onClick={() => navigate(user?.role === 'admin' ? '/admin' : '/faculty')} className="btn-secondary p-2">
           <ChevronLeft className="h-4 w-4" />
         </button>
         <div>
@@ -274,6 +288,22 @@ export const FacultyTakeAttendance: React.FC = () => {
             </select>
           </div>
         </div>
+
+        {selectedClass && selectedSubject && (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-indigo-50/80 border border-indigo-100 p-3.5 rounded-custom text-xs">
+            <div className="flex items-center gap-2 font-medium text-indigo-950">
+              <span className="font-bold uppercase tracking-wider text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded">
+                Assigned Staff
+              </span>
+              <span className="font-bold text-sm text-indigo-900">{assignedFacultyName}</span>
+            </div>
+            {user?.role === 'admin' && (
+              <span className="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                Admin Proxy Mode (Staff Missed / Absent)
+              </span>
+            )}
+          </div>
+        )}
 
         {isHolidayDate && (
           <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 text-red-700 rounded-custom">
@@ -344,7 +374,7 @@ export const FacultyTakeAttendance: React.FC = () => {
                         <td className="table-td text-primary font-medium">{student.user.full_name}</td>
                         <td className="table-td">
                           <div className="flex bg-slate-100 p-0.5 rounded-lg w-fit">
-                            {['Present', 'Absent', 'Late', 'Leave'].map((status) => (
+                            {['Present', 'Absent'].map((status) => (
                               <button
                                 key={status}
                                 type="button"
@@ -353,11 +383,7 @@ export const FacultyTakeAttendance: React.FC = () => {
                                   currentRecord.status === status
                                     ? status === 'Present'
                                       ? 'bg-green-600 text-white shadow-xs'
-                                      : status === 'Absent'
-                                      ? 'bg-red-600 text-white shadow-xs'
-                                      : status === 'Late'
-                                      ? 'bg-amber-500 text-white shadow-xs'
-                                      : 'bg-blue-600 text-white shadow-xs'
+                                      : 'bg-red-600 text-white shadow-xs'
                                     : 'text-slate-600 hover:text-slate-800 hover:bg-slate-200'
                                 }`}
                               >
@@ -369,7 +395,7 @@ export const FacultyTakeAttendance: React.FC = () => {
                         <td className="table-td">
                           <input 
                             type="text" 
-                            placeholder="Reason for late/leave..." 
+                            placeholder="Remarks / Notes..." 
                             className="input-field py-1 text-xs max-w-xs"
                             value={currentRecord.remarks}
                             onChange={(e) => handleRemarksChange(student.id, e.target.value)}

@@ -833,3 +833,59 @@ def get_admin_staff_member_profile(
         raise HTTPException(status_code=404, detail="Faculty member not found")
     return faculty_member
 
+# ----------------- STAFF DAILY ATTENDANCE (ADMIN ONLY) -----------------
+@router.get("/staff-attendance")
+def get_staff_daily_attendance(
+    attendance_date: date = Query(default_factory=date.today),
+    db: Session = Depends(get_db)
+):
+    faculty_list = db.query(models.Faculty).all()
+    records = db.query(models.StaffAttendance).filter(models.StaffAttendance.date == attendance_date).all()
+    rec_map = {r.faculty_id: r for r in records}
+    
+    result = []
+    for f in faculty_list:
+        rec = rec_map.get(f.id)
+        result.append({
+            "faculty_id": f.id,
+            "employee_id": f.employee_id,
+            "full_name": f.user.full_name,
+            "email": f.user.email,
+            "designation": f.designation,
+            "specialization": f.specialization,
+            "status": rec.status if rec else "Present",
+            "remarks": rec.remarks if rec else None,
+            "marked": rec is not None
+        })
+    return result
+
+@router.post("/staff-attendance/take")
+def take_staff_attendance(
+    payload: schemas.StaffAttendanceSubmit,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    att_date = payload.date
+    for rec in payload.records:
+        existing = db.query(models.StaffAttendance).filter(
+            models.StaffAttendance.faculty_id == rec.faculty_id,
+            models.StaffAttendance.date == att_date
+        ).first()
+        
+        if existing:
+            existing.status = rec.status
+            existing.remarks = rec.remarks
+            existing.marked_by = current_user.id
+        else:
+            staff_att = models.StaffAttendance(
+                faculty_id=rec.faculty_id,
+                date=att_date,
+                status=rec.status,
+                remarks=rec.remarks,
+                marked_by=current_user.id
+            )
+            db.add(staff_att)
+            
+    db.commit()
+    return {"message": "Staff daily attendance recorded successfully"}
+

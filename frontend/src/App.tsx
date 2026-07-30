@@ -18,6 +18,7 @@ import AdminStudents from './pages/admin/Students';
 import AdminFaculty from './pages/admin/Faculty';
 import AdminAcademic from './pages/admin/Academic';
 import AdminHolidays from './pages/admin/Holidays';
+import { AdminStaffAttendance } from './pages/admin/StaffAttendance';
 
 import FacultyDashboard from './pages/faculty/Dashboard';
 import FacultyTakeAttendance from './pages/faculty/TakeAttendance';
@@ -53,6 +54,8 @@ export const App: React.FC = () => {
               {/* Protected Admin routes */}
               <Route path="/admin" element={<DashboardLayout />}>
                 <Route index element={<AdminDashboard />} />
+                <Route path="staff-attendance" element={<AdminStaffAttendance />} />
+                <Route path="take-attendance" element={<FacultyTakeAttendance />} />
                 <Route path="students" element={<AdminStudents />} />
                 <Route path="faculty" element={<AdminFaculty />} />
                 <Route path="academic" element={<AdminAcademic />} />

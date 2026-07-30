@@ -27,6 +27,7 @@ interface SubjectPercentage {
   subject_id: string;
   subject_name: string;
   subject_code: string;
+  is_lab?: boolean;
   total_conducted: number;
   attended: number;
   present: number;
@@ -151,7 +152,7 @@ export const StudentDashboard: React.FC = () => {
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card-base flex items-center gap-4">
           <div className="bg-blue-50 p-3 rounded-custom text-blue-600">
             <BookOpen className="h-5 w-5" />
@@ -166,7 +167,7 @@ export const StudentDashboard: React.FC = () => {
             <CheckCircle className="h-5 w-5" />
           </div>
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Attended</span>
+            <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Attended (Present)</span>
             <span className="text-xl font-bold text-primary">{totalAttended}</span>
           </div>
         </div>
@@ -177,15 +178,6 @@ export const StudentDashboard: React.FC = () => {
           <div>
             <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">Absent</span>
             <span className="text-xl font-bold text-primary">{stats?.absent ?? 0}</span>
-          </div>
-        </div>
-        <div className="card-base flex items-center gap-4">
-          <div className="bg-purple-50 p-3 rounded-custom text-purple-600">
-            <TrendingUp className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">On Leave</span>
-            <span className="text-xl font-bold text-primary">{stats?.leave ?? 0}</span>
           </div>
         </div>
       </div>
@@ -254,34 +246,50 @@ export const StudentDashboard: React.FC = () => {
           <p className="text-sm text-slate-400 text-center py-6">No enrollment data registered.</p>
         ) : (
           <div className="space-y-5">
-            {percentages.map((p) => (
-              <div key={p.subject_id}>
-                <div className="flex justify-between items-end text-sm mb-1.5">
-                  <div>
-                    <span className="font-semibold text-primary">{p.subject_name}</span>
-                    <span className="text-xs text-slate-400 ml-1.5 font-medium">({p.subject_code})</span>
+            {percentages.map((p) => {
+              const isLab = p.is_lab ?? (
+                p.subject_name.toLowerCase().includes('lab') ||
+                p.subject_name.toLowerCase().includes('laboratory') ||
+                p.subject_code.toLowerCase().includes('lab')
+              );
+              const greenThreshold = isLab ? 90 : 80;
+              const warningThreshold = isLab ? 75 : 60;
+              const isGreen = p.percentage >= greenThreshold;
+              const isAmber = !isGreen && p.percentage >= warningThreshold;
+
+              const textClass = isGreen ? 'text-green-600' : isAmber ? 'text-amber-600' : 'text-red-600';
+              const bgClass = isGreen ? 'bg-green-500' : isAmber ? 'bg-amber-500' : 'bg-red-500';
+
+              return (
+                <div key={p.subject_id}>
+                  <div className="flex justify-between items-end text-sm mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-primary">{p.subject_name}</span>
+                      <span className="text-xs text-slate-400 font-medium">({p.subject_code})</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${isLab ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                        {isLab ? 'Lab (90% req.)' : 'Theory (80% req.)'}
+                      </span>
+                    </div>
+                    <div className="text-right flex items-center gap-4">
+                      <span className="text-xs text-slate-400">{p.attended}/{p.total_conducted} classes</span>
+                      <span className={`font-bold text-sm ${textClass}`}>
+                        {p.percentage}%
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right flex items-center gap-4">
-                    <span className="text-xs text-slate-400">{p.attended}/{p.total_conducted} classes</span>
-                    <span className={`font-bold text-sm ${p.percentage >= 75 ? 'text-green-600' : p.percentage >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
-                      {p.percentage}%
-                    </span>
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${bgClass}`}
+                      style={{ width: `${Math.min(p.percentage, 100)}%` }}
+                    />
+                  </div>
+                  <div className="flex gap-4 mt-1.5 text-[10px] text-slate-400">
+                    <span>Present: {p.present}</span>
+                    <span>Absent: {p.absent}</span>
                   </div>
                 </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${p.percentage >= 75 ? 'bg-green-500' : p.percentage >= 60 ? 'bg-amber-500' : 'bg-red-500'}`}
-                    style={{ width: `${Math.min(p.percentage, 100)}%` }}
-                  />
-                </div>
-                <div className="flex gap-4 mt-1.5 text-[10px] text-slate-400">
-                  <span>Present: {p.present}</span>
-                  <span>Absent: {p.absent}</span>
-                  <span>Late: {p.late ?? 0}</span>
-                  {p.leave > 0 && <span>Leave: {p.leave}</span>}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

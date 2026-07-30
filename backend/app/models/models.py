@@ -232,8 +232,10 @@ class StudentMark(Base):
     id = Column(String(36), primary_key=True, default=generate_uuid)
     student_id = Column(String(36), ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
     subject_id = Column(String(36), ForeignKey("subjects.id", ondelete="CASCADE"), nullable=False)
-    cfa = Column(Integer, nullable=True)  # Continuous Formative Assessment
-    ese = Column(Integer, nullable=True)  # End Semester Exam
+    cfa1 = Column(Integer, nullable=True) # Continuous Formative Assessment 1 (Max 50)
+    cfa2 = Column(Integer, nullable=True) # Continuous Formative Assessment 2 (Max 50)
+    cfa = Column(Integer, nullable=True)  # Continuous Formative Assessment (Legacy)
+    ese = Column(Integer, nullable=True)  # End Semester Exam (Legacy)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -242,9 +244,50 @@ class StudentMark(Base):
     subject = relationship("Subject")
 
     @property
+    def get_cfa1(self):
+        if self.cfa1 is not None:
+            return self.cfa1
+        if self.cfa is not None:
+            return self.cfa
+        return None
+
+    @property
+    def get_cfa2(self):
+        if self.cfa2 is not None:
+            return self.cfa2
+        if self.ese is not None:
+            return self.ese
+        return None
+
+    @property
     def total(self):
-        cfa_val = self.cfa if self.cfa is not None else 0
-        ese_val = self.ese if self.ese is not None else 0
-        if self.cfa is None and self.ese is None:
+        c1 = self.get_cfa1
+        c2 = self.get_cfa2
+        if c1 is None and c2 is None:
             return None
-        return cfa_val + ese_val
+        return (c1 or 0) + (c2 or 0)
+
+    @property
+    def percentage(self):
+        t = self.total
+        if t is None:
+            return None
+        return round((t / 100.0) * 100, 1)
+
+class StaffAttendance(Base):
+    __tablename__ = "staff_attendance"
+    __table_args__ = (UniqueConstraint('faculty_id', 'date', name='_faculty_date_uc'),)
+    
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    faculty_id = Column(String(36), ForeignKey("faculty.id", ondelete="CASCADE"), nullable=False)
+    date = Column(Date, nullable=False)
+    status = Column(String(20), nullable=False)  # Present, Absent, Late, Leave
+    remarks = Column(String(255), nullable=True)
+    marked_by = Column(String(36), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    faculty = relationship("Faculty")
+    marker = relationship("User", foreign_keys=[marked_by])
+

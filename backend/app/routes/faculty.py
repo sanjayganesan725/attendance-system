@@ -8,7 +8,7 @@ from app.models import models
 from app.schemas import schemas
 from app.auth.auth_handler import RoleChecker, get_current_user
 
-router = APIRouter(prefix="/faculty", tags=["Faculty Operations"], dependencies=[Depends(RoleChecker(["faculty"]))])
+router = APIRouter(prefix="/faculty", tags=["Faculty Operations"], dependencies=[Depends(RoleChecker(["faculty", "admin"]))])
 
 # ----------------- DASHBOARD & ASSIGNMENTS -----------------
 @router.get("/dashboard/stats")
@@ -16,14 +16,17 @@ def get_faculty_stats(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    assignments = db.query(models.SubjectFacultyAssignment).filter(
-        models.SubjectFacultyAssignment.faculty_id == current_user.id
-    ).all()
+    if current_user.role == "admin":
+        assignments = db.query(models.SubjectFacultyAssignment).all()
+    else:
+        assignments = db.query(models.SubjectFacultyAssignment).filter(
+            models.SubjectFacultyAssignment.faculty_id == current_user.id
+        ).all()
     
     unique_classes = len(set(a.class_id for a in assignments))
     unique_subjects = len(set(a.subject_id for a in assignments))
     
-    # History of markings by this faculty
+    # History of markings
     marked_count = db.query(models.Attendance).filter(
         models.Attendance.marked_by == current_user.id
     ).count()
@@ -40,6 +43,8 @@ def get_faculty_stats(
                 "subject_id": a.subject_id,
                 "subject_name": a.subject.name,
                 "subject_code": a.subject.code,
+                "faculty_id": a.faculty_id,
+                "faculty_name": a.faculty.user.full_name if a.faculty and a.faculty.user else "Unassigned",
                 "department_name": a.class_.department.name
             }
             for a in assignments
@@ -99,15 +104,14 @@ def submit_attendance(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    # Check if assignment exists
-    assignment = db.query(models.SubjectFacultyAssignment).filter(
-        models.SubjectFacultyAssignment.faculty_id == current_user.id,
-        models.SubjectFacultyAssignment.class_id == data.class_id,
-        models.SubjectFacultyAssignment.subject_id == data.subject_id
-    ).first()
-    
-    if not assignment:
-        raise HTTPException(status_code=403, detail="You are not authorized to mark attendance for this class/subject")
+    if current_user.role != "admin":
+        assignment = db.query(models.SubjectFacultyAssignment).filter(
+            models.SubjectFacultyAssignment.faculty_id == current_user.id,
+            models.SubjectFacultyAssignment.class_id == data.class_id,
+            models.SubjectFacultyAssignment.subject_id == data.subject_id
+        ).first()
+        if not assignment:
+            raise HTTPException(status_code=403, detail="You are not authorized to mark attendance for this class/subject")
         
     # Check if date is a weekend or holiday
     if data.date.weekday() in [5, 6]:
@@ -285,13 +289,20 @@ def get_class_subject_marks(
     result = []
     for s in students:
         mark = marks_map.get(s.id)
+        c1 = mark.get_cfa1 if mark else None
+        c2 = mark.get_cfa2 if mark else None
+        tot = mark.total if mark else None
+        perc = mark.percentage if mark else None
         result.append({
             "student_id": s.id,
             "roll_number": s.roll_number,
             "full_name": s.user.full_name,
-            "cfa": mark.cfa if mark else None,
-            "ese": mark.ese if mark else None,
-            "total": mark.total if mark else None
+            "cfa1": c1,
+            "cfa2": c2,
+            "cfa": c1,
+            "ese": c2,
+            "total": tot,
+            "percentage": perc
         })
         
     return result
@@ -305,8 +316,8 @@ def submit_student_marks(
     # Upsert marks
     for record in payload.records:
         student_id = record.student_id
-        cfa = record.cfa
-        ese = record.ese
+        cfa1 = record.cfa1 if record.cfa1 is not None else record.cfa
+        cfa2 = record.cfa2 if record.cfa2 is not None else record.ese
         
         # Check if record exists
         mark = db.query(models.StudentMark).filter(
@@ -315,23 +326,27 @@ def submit_student_marks(
         ).first()
         
         # Convert empty strings to None
-        if cfa == "": cfa = None
-        if ese == "": ese = None
+        if cfa1 == "": cfa1 = None
+        if cfa2 == "": cfa2 = None
         
-        if cfa is not None:
-            cfa = int(cfa)
-        if ese is not None:
-            ese = int(ese)
+        if cfa1 is not None:
+            cfa1 = int(cfa1)
+        if cfa2 is not None:
+            cfa2 = int(cfa2)
             
         if mark:
-            mark.cfa = cfa
-            mark.ese = ese
+            mark.cfa1 = cfa1
+            mark.cfa2 = cfa2
+            mark.cfa = cfa1
+            mark.ese = cfa2
         else:
             mark = models.StudentMark(
                 student_id=student_id,
                 subject_id=payload.subject_id,
-                cfa=cfa,
-                ese=ese
+                cfa1=cfa1,
+                cfa2=cfa2,
+                cfa=cfa1,
+                ese=cfa2
             )
             db.add(mark)
             
