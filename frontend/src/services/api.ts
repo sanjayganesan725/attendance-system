@@ -3,7 +3,7 @@ import axios from 'axios';
 // Production API URL fallback for Vercel
 const API_BASE_URL = import.meta.env.VITE_API_URL || (
   typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
-    ? 'https://f0825e1c86945851-106-192-172-207.serveousercontent.com/api/v1'
+    ? 'https://lucky-berries-begin.loca.lt/api/v1'
     : '/api/v1'
 );
 
@@ -11,15 +11,19 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'bypass-tunnel-reminder': 'true',
   },
 });
 
-// Request Interceptor: Attach JWT token
+// Request Interceptor: Attach JWT token & bypass header
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (config.headers) {
+      config.headers['bypass-tunnel-reminder'] = 'true';
     }
     return config;
   },
